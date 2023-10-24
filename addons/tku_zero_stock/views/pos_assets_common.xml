@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="restrict_stock_zero" inherit_id="point_of_sale.assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/tku_zero_stock/static/src/js/models.js"/>
+            <script type="text/javascript" src="/tku_zero_stock/static/src/js/ProductScreen.js"/>
+        </xpath>
+    </template>
+</odoo>
