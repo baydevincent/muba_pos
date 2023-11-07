@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-<!--    Adding files into point_of_sale.assets-->
-	<template id="pos_extend_assets" inherit_id="point_of_sale.assets">
-	   <xpath expr="." position="inside">   
-		   <script type="text/javascript" src="/tku_virtual_payment/static/src/js/mubapay_payment_button.js"/>
-	   </xpath>
-	</template>
-</odoo>
