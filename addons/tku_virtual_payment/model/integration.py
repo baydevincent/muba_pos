@@ -1,4 +1,5 @@
 from odoo import api, fields, models, _
+from odoo.http import request
 import requests
 import json
 import base64
@@ -9,14 +10,7 @@ import uuid
 from Crypto.Cipher import AES
 from datetime import datetime
 import pytz
-from random import randint
 from odoo.exceptions import UserError
-
-def random_with_N_digits(n):
-    range_start = 10**(n-1)
-    range_end = (10**n)-1
-        
-    return randint(range_start, range_end)
 
 class MubapayPayment(models.Model):
     _name = "mubapay.payment"
@@ -26,14 +20,16 @@ class MubapayPayment(models.Model):
     merchant_password = fields.Float(string='PIN')
     device_id = fields.Char(string='Device ID', readonly=True)
 
-    def get_mac_address(self):
-        mac = ':'.join(['{:02x}'.format((uuid.getnode() >> elements) & 0xff) for elements in range(5, -1, -1)])
-        return mac
+    # def get_mac_address(self):
+        # mac = ':'.join(['{:02x}'.format((uuid.getnode() >> elements) & 0xff) for elements in range(5, -1, -1)])
+        # return mac
     
     def generate_unique_device_code(self):
         obj = self.env['mubapay.payment']
-        mac_address = obj.get_mac_address()
-        # print(mac_address)
+        # mac_address = obj.get_mac_address()
+        # # print(mac_address)
+        ip_address = request.httprequest.environ['REMOTE_ADDR']
+        mac_address = get_mac_address(ip=ip_address)
         unique_code = hashlib.md5(mac_address.encode()).hexdigest()[:16]
         final = str(unique_code)
         return final
@@ -155,14 +151,13 @@ class MubapayPayment(models.Model):
     @api.model
     def do_trx(self, totalPrice, santriQR, pin_pass, user):
         obj = self.env['mubapay.payment']
-        timestamp = obj.get_formatted_timestamp()
         usr_obj = self.env['allowed.device'].browse(user)
+        timestamp = obj.get_formatted_timestamp()
         username =  usr_obj.merchant_user
         secret_key = '4pMmH6LcWdclcMdRI5fCyXs19GanYsh3'
         url_trx = f'https://devops.usid.co.id:1123/siponpes/toko/transaksi?username={username}'
         timestamp = timestamp
         seq = self.env['ir.sequence'].next_by_code('pos.order')
-        # santri = 'djAxnVg6ra8oRS+u2B1BuoP/6lQM+ywPSINcUVRSnt6Y2XrKNI/BDPawz8axiQ=='
         
         body = {
             "nota": seq,
