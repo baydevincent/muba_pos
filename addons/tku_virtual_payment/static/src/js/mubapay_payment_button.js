@@ -8,6 +8,7 @@ odoo.define('pos_custom_buttons.CustomTicketButtons', function (require) {
     const Registries = require('point_of_sale.Registries');
     const PaymentScreen = require('point_of_sale.PaymentScreen');
     var rpc = require('web.rpc');
+    var session = require('web.session');
 
     const CustomButtonPaymentScreen = (PaymentScreen) =>
         class extends PaymentScreen {
@@ -30,6 +31,7 @@ odoo.define('pos_custom_buttons.CustomTicketButtons', function (require) {
                             var keterangan;
                             var nama;
                             var data;
+                            var user = session.user_id;
 
                             const orderLines = order.get_orderlines();
                             const totalPrice = orderLines.reduce((sum, orderLine) => sum + orderLine.get_price_with_tax(), 0);
@@ -40,10 +42,10 @@ odoo.define('pos_custom_buttons.CustomTicketButtons', function (require) {
                             rpc.query({
                                 model: 'mubapay.payment',
                                 method: 'do_trx',
-                                args: [totalPrice, santriQR, pin_pass]
+                                args: [totalPrice, santriQR, pin_pass, user]
                             }).then(function (result) {
-                                hsl = result;
-                                keterangan = hsl['keterangan']
+                                hsl = result;   
+                                keterangan = hsl['keterangan']  
                                 data = hsl.data
                                 nama = data.nama
 

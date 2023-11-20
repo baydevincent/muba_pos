@@ -11,11 +11,13 @@
     'website': 'https://bydev.tech',
     'qweb': [
         'static/src/xml/mubapay_payment_button_view.xml',
-        'static/src/xml/auth.xml',
     ],
     'depends': ['base', 'point_of_sale'],
+    
     'data': [
+        'security/ir.model.access.csv',
         'views/payment_method_pos_view.xml',
+        'views/allowed_device_id_view.xml',
     ],
     'installable': True,
     'application': True,
