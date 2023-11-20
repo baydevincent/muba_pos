@@ -10,6 +10,7 @@ import uuid
 from Crypto.Cipher import AES
 from datetime import datetime
 import pytz
+from getmac import get_mac_address
 from odoo.exceptions import UserError
 
 class MubapayPayment(models.Model):
