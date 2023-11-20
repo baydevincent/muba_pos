@@ -162,7 +162,7 @@ class MubapayPayment(models.Model):
         url_trx = f'https://devops.usid.co.id:1123/siponpes/toko/transaksi?username={username}'
         timestamp = timestamp
         seq = self.env['ir.sequence'].next_by_code('pos.order')
-        santriqr = 'djAxnVg6ra8oRS+u2B1BuoP/6lQM+ywPSINcUVRSnt6Y2XrKNI/BDPawz8axiQ=='
+        # santri = 'djAxnVg6ra8oRS+u2B1BuoP/6lQM+ywPSINcUVRSnt6Y2XrKNI/BDPawz8axiQ=='
         
         body = {
             "nota": seq,
@@ -171,7 +171,7 @@ class MubapayPayment(models.Model):
             "qty": 1
         }
         
-        payload = obj.create_payload_trx("toko/transaksi", "POST", username, timestamp, santriqr)
+        payload = obj.create_payload_trx("toko/transaksi", "POST", username, timestamp, santriQR)
         signature = obj.create_signature(payload, secret_key)
         
         headers = {
