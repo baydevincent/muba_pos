@@ -1,5 +1,4 @@
 from odoo import api, fields, models, _
-from odoo.http import request
 import requests
 import json
 import base64
@@ -10,7 +9,6 @@ import uuid
 from Crypto.Cipher import AES
 from datetime import datetime
 import pytz
-from getmac import get_mac_address
 from odoo.exceptions import UserError
 
 class MubapayPayment(models.Model):
@@ -24,30 +22,26 @@ class MubapayPayment(models.Model):
     # def get_mac_address(self):
         # mac = ':'.join(['{:02x}'.format((uuid.getnode() >> elements) & 0xff) for elements in range(5, -1, -1)])
         # return mac
-    
-    def generate_unique_device_code(self):
-        obj = self.env['mubapay.payment']
+        #
+    # def generate_unique_device_code(self):
+        # obj = self.env['mubapay.payment']
         # mac_address = obj.get_mac_address()
-        # # print(mac_address)
-        ip_address = request.httprequest.environ['REMOTE_ADDR']
-        mac_address = get_mac_address(ip=ip_address)
-        unique_code = hashlib.md5(mac_address.encode()).hexdigest()[:16]
-        final = str(unique_code)
-        return final
+        # # # print(mac_address)
+        # unique_code = hashlib.md5(mac_address.encode()).hexdigest()[:16]
+        # final = str(unique_code)
+        # return final
     
     def check_device_id(self, user):
-        obj = self.env['mubapay.payment']
         usr_obj = self.env['allowed.device'].browse(user)
         device_id = usr_obj.device_id
-        matching = obj.generate_unique_device_code()
         
-        if device_id == matching:
+        if device_id:
             return True
         else:
             raise UserError("""
-                Device Ini tidak diijinkan untuk transaksi.
+                Device ID Ini tidak diijinkan untuk transaksi.
                 Device ID: [ %s ]
-            """ % matching)
+            """ % device_id)
 
     def get_formatted_datetime(self):
         utc_now = datetime.utcnow()
@@ -130,18 +124,16 @@ class MubapayPayment(models.Model):
         passwd = usr_obj.passwd
         device_id = usr_obj.device_id
         obj.check_device_id(user)
-        url = 'https://devops.usid.co.id:1123/siponpes/api/signin'
+        url = 'https://muba.usid.co.id:1234/siponpes/api/signin'
         secret_key = '4pMmH6LcWdclcMdRI5fCyXs19GanYsh3'
         datetime_str = obj.get_formatted_datetime()
-            # user = self.username
-            # password = self.password
         header = f"{merchant}-{passwd}-{device_id}" 
         resp = obj.get_response(url, secret_key, header, datetime_str)
+        
         response =  resp.status_code
         if response == 200:
             response_data = resp.json()
             token = response_data.get("token")
-            #update field token_val 
         else:
             raise UserError("""
                 Ups Generate Token Gagal !
@@ -156,7 +148,7 @@ class MubapayPayment(models.Model):
         timestamp = obj.get_formatted_timestamp()
         username =  usr_obj.merchant_user
         secret_key = '4pMmH6LcWdclcMdRI5fCyXs19GanYsh3'
-        url_trx = f'https://devops.usid.co.id:1123/siponpes/toko/transaksi?username={username}'
+        url_trx = f'https://muba.usid.co.id:1234/siponpes/toko/transaksi?username={username}'
         timestamp = timestamp
         seq = self.env['ir.sequence'].next_by_code('pos.order')
         
@@ -187,7 +179,7 @@ class MubapayPayment(models.Model):
             resp_data = responses.json()
             # token = response_data.get("status")
         else:
-            print("Gagal! Kode Status:", responses.status_code)
+            raise UserError("Gagal! Pastikan Saldo Mencukupi")
            
         print(resp_data)
         return resp_data
