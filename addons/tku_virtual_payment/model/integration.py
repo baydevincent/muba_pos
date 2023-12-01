@@ -119,11 +119,10 @@ class MubapayPayment(models.Model):
     
     def get_token(self, user):
         obj = self.env['mubapay.payment']
-        usr_obj = self.env['allowed.device'].browse(user)
+        usr_obj = self.env['allowed.device'].search([('user', '=', user)])
         merchant =  usr_obj.merchant_user
         passwd = usr_obj.passwd
         device_id = usr_obj.device_id
-        obj.check_device_id(user)
         url = 'https://muba.usid.co.id:1234/siponpes/api/signin'
         secret_key = '4pMmH6LcWdclcMdRI5fCyXs19GanYsh3'
         datetime_str = obj.get_formatted_datetime()
@@ -144,9 +143,11 @@ class MubapayPayment(models.Model):
     @api.model
     def do_trx(self, totalPrice, santriQR, pin_pass, user):
         obj = self.env['mubapay.payment']
-        usr_obj = self.env['allowed.device'].browse(user)
+        usr_obj = self.env['allowed.device'].search([('user', '=', user)])
         timestamp = obj.get_formatted_timestamp()
         username =  usr_obj.merchant_user
+        if username == False:
+            raise UserError("User anda tidak memiliki akses transaksi MubaPay")
         secret_key = '4pMmH6LcWdclcMdRI5fCyXs19GanYsh3'
         url_trx = f'https://muba.usid.co.id:1234/siponpes/toko/transaksi?username={username}'
         timestamp = timestamp
