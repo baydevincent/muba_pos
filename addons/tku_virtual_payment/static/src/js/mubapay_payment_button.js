@@ -29,7 +29,7 @@ odoo.define('pos_custom_buttons.CustomTicketButtons', function (require) {
                         if (pinConfirmed) {
                             var hsl;
                             var keterangan;
-                            var nama;
+                            // var nama;
                             var data;
                             var user = session.user_id;
 
@@ -47,11 +47,11 @@ odoo.define('pos_custom_buttons.CustomTicketButtons', function (require) {
                                 hsl = result;   
                                 keterangan = hsl['keterangan']  
                                 data = hsl.data
-                                nama = data.nama
+                                // nama = data.nama
 
                                 Gui.showPopup("ConfirmPopup", {
                                     title: self.env._t(`${keterangan}`),
-                                    body: self.env._t(`Nama: ${nama}
+                                    body: self.env._t(`Nama: 
                                                    Saldo Terpotong: Rp.${totalPrice}.-`),
                                     confirmText: 'Ok',
                                     cancelText: 'Cancel',
