@@ -47,12 +47,12 @@ odoo.define('pos_custom_buttons.CustomTicketButtons', function (require) {
                                 hsl = result;   
                                 keterangan = hsl['keterangan']  
                                 data = hsl.data
-                                console.log(data)
+                                // console.log(data)
                                 // nama = data.nama
 
                                 Gui.showPopup("ConfirmPopup", {
                                     title: self.env._t(`${keterangan}`),
-                                    body: self.env._t(`Nama: 
+                                    body: self.env._t(` 
                                                    Saldo Terpotong: Rp.${totalPrice}.-`),
                                     confirmText: 'Ok',
                                     cancelText: 'Cancel',
