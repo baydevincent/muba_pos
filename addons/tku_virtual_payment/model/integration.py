@@ -180,6 +180,7 @@ class MubapayPayment(models.Model):
             resp_data = responses.json()
             # token = response_data.get("status")
         else:
+            print(resp_data)
             raise UserError("Gagal! Pastikan Saldo Mencukupi")
            
         print(resp_data)
