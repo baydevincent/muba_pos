@@ -47,6 +47,7 @@ odoo.define('pos_custom_buttons.CustomTicketButtons', function (require) {
                                 hsl = result;   
                                 keterangan = hsl['keterangan']  
                                 data = hsl.data
+                                console.log(data)
                                 // nama = data.nama
 
                                 Gui.showPopup("ConfirmPopup", {
