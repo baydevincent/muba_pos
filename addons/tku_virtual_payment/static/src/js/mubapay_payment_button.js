@@ -92,27 +92,27 @@ odoo.define('pos_custom_buttons.CustomTicketButtons', function (require) {
                         <script>document.getElementById("scan-username").focus();</script>
                     </div>`);   
 
-                    $popup.find('#scan-confirm').on('click', function () {
-                        // const santriQR = $popup.find('#scan-username').val();
-                        var vals = document.getElementById("scan-username")
-                        var santriQR = vals.value
-                        resolve({ confirmed: true, payload: { santriQR } });
-                        $popup.modal('hide');
-                    });
-                    
-                    // $popup.find('#scan-username').on('keyup', function () {
+                    // $popup.find('#scan-confirm').on('click', function () {
+                    //     // const santriQR = $popup.find('#scan-username').val();
                     //     var vals = document.getElementById("scan-username")
                     //     var santriQR = vals.value
-                    //     resolve({ confirmed: true, payload: { santriQR } });    
+                    //     resolve({ confirmed: true, payload: { santriQR } });
                     //     $popup.modal('hide');
-                    //     // const santriQR = $popup.find('#scan-username').val();
-                    //     if(santriQR.length === 64){
-                    //         $popup.find('#scan-confirm').on('click', function () {
-                    //             resolve({ confirmed: true, payload: { santriQR } });
-                    //             $popup.modal('hide');
-                    //         });                 
-                    //     }
                     // });
+                    
+                    $popup.find('#scan-username').on('keyup', function () {
+                        var vals = document.getElementById("scan-username")
+                        var santriQR = vals.value
+                        resolve({ confirmed: true, payload: { santriQR } });    
+                        $popup.modal('hide');
+                        // const santriQR = $popup.find('#scan-username').val();
+                        if(santriQR.length === 64){
+                            $popup.find('#scan-confirm').on('click', function () {
+                                resolve({ confirmed: true, payload: { santriQR } });
+                                $popup.modal('hide');
+                            });                 
+                        }
+                    });
 
                     $popup.find('#scan-cancel').on('click', function (e) {
                         e.preventDefault();
